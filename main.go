@@ -9,6 +9,8 @@ import (
 )
 
 const (
+	driverName             = "sqlite"
+	databaseName           = "tracker.db"
 	ParcelStatusRegistered = "registered"
 	ParcelStatusSent       = "sent"
 	ParcelStatusDelivered  = "delivered"
@@ -98,8 +100,15 @@ func (s ParcelService) Delete(number int) error {
 
 func main() {
 	// настройте подключение к БД
+	db, err := sql.Open(driverName, databaseName)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
 
-	store := // создайте объект ParcelStore функцией NewParcelStore
+	// создайте объект ParcelStore функцией NewParcelStore
+	store := NewParcelStore(db)
 	service := NewParcelService(store)
 
 	// регистрация посылки
@@ -137,7 +146,7 @@ func main() {
 	err = service.Delete(p.Number)
 	if err != nil {
 		fmt.Println(err)
-		return
+		//return
 	}
 
 	// вывод посылок клиента
